@@ -221,6 +221,7 @@ function Board () {
 		}
 
 		// check if checker is moving home and is allowed to:
+		// TODO: A die may not be used to bear off checkers from a lower-numbered point unless there are no checkers on any higher points.
 		if (tile + distance >= 24) {
 			for (var i = 0; i < 18; i++) {
 				if (player.checkers[i] > 0) {
