@@ -1,7 +1,7 @@
 var Q = require('q');
 
 
-function Aggressive (id) {
+function Safe (id) {
 
 	var self = this;
 	self.id = id;
@@ -23,11 +23,13 @@ function Aggressive (id) {
 
 	function applyScoreToPermutation (p) {
 
-		var opponent = 1-self.id;
+		var score = p.board.players[self.id].bearedOff * 10;
 
-		var score = p.board.players[opponent].hits * 10;
-
-		score += p.board.players[self.id].bearedOff * 11;
+		p.board.players[self.id].checkers.forEach(function (val) {
+			if (val === 1) {
+				score -= 1;
+			}
+		});
 
 		p.score = score;
 
@@ -50,4 +52,4 @@ function Aggressive (id) {
 }
 
 
-module.exports = Aggressive;
+module.exports = Safe;
