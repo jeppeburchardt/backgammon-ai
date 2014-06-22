@@ -8,10 +8,15 @@ var Aggressive = require('./src/controllers/Aggressive.js')
 
 var game = new Game();
 
-game.setController(Random, 'Sonja');
-game.setController(Aggressive, 'Pelle');
+game.setController(Aggressive, 'Sonja');
+game.setController(Random, 'Pelle');
 
-game.start();
+game.start().then(function (result) {
+	console.log('GAME IS OVER!', result);
+	console.log(game.board.players[0].name + ' got ' + result[0] + ' points');
+	console.log(game.board.players[1].name + ' got ' + result[1] + ' points');
+	game.print();
+});
 
 
 // test hit player:

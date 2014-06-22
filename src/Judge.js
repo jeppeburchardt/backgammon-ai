@@ -36,15 +36,53 @@ function Judge (game) {
 	}
 
 	/**
+	 * Calculates victory points for each player.
+	 * 
+	 * @return {Array} An array with the score of each player. The player's ID is the index in the array.
+	 */
+	this.getVictory = function () {
+
+		var result = [];
+		var winner = self.checkForWinner();
+		var loser = 1-winner;
+
+		var winningPlayer = self.game.board.players[winner];
+		var losingPlayer = self.game.board.players[loser];
+
+		if (losingPlayer.bearedOff > 0) {
+
+			// one point game:
+			result[winner] = 1;
+			result[loser] = 0;
+
+		} else if (losingPlayer.hits > 0 || losingPlayer.checkers.some(function (num, tile) {
+			return (tile < 6 && num > 0);
+		})) {
+
+			// tripple point game:
+			result[winner] = 3;
+			result[loser] = 0;
+
+		} else {
+
+			// double point game:
+			result[winner] = 2;
+			result[loser] = 0;
+		}
+
+		return result;
+	}
+
+	/**
 	 * Checks if a player has won the game
 	 *
-	 * @returns Player object or Null if there is no winner
+	 * @returns Player ID or Null if there is no winner
 	 */
 	 this.checkForWinner = function () {
 	 	var winner = null;
-	 	this.game.board.players.forEach(function (player) {
+	 	this.game.board.players.forEach(function (player, id) {
 	 		if (player.bearedOff === 15) {
-	 			winner = player;
+	 			winner = id;
 	 		}
 	 	});
 	 	return winner;

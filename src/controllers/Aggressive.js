@@ -14,9 +14,9 @@ function Aggressive (id) {
 
 		result = findBestPermutation(permutations);
 
-		setTimeout(function(){
+		//setTimeout(function(){
 			deferred.resolve(result);
-		}, 50);
+		//}, 50);
 
 		return deferred.promise;
 	}

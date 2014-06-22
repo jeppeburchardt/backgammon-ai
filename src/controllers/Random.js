@@ -17,9 +17,9 @@ function Random (id) {
 
 		result = permutations[Math.floor(Math.random()*permutations.length)].moves;
 
-		setTimeout(function(){
+		//setTimeout(function(){
 			deferred.resolve(result);
-		}, 50);
+		//}, 50);
 
 		return deferred.promise;
 	}

@@ -38,7 +38,7 @@ function Game () {
 	 */
 	this.start = function () {
 		executeNextTurn();
-		self.print();
+		// self.print();
 		return deferred.promise;
 	}
 
@@ -97,18 +97,16 @@ function Game () {
 				});
 			} else {
 
-				allLegalMoves.forEach(function (p, i) { 
-					console.log('legal move '+i+':', p.moves); 
-				});
-				console.log('tried move: ', moves);
-
-				throw new Error('Player tried to make an illegal move!');
+				//controller.turn tried to make an illegal move, player loses
+				self.isRunning = false;
+				resolveGame(self.getCurrentIndex());
 			}
 
 		}).fail(function (error) {
 			
-			console.log("ERROR in " + self.getCurrentPlayer().name + "'s move");
-			throw error;
+			//controller.turn threw an exception, player loses
+			self.isRunning = false;
+			resolveGame(self.getCurrentIndex());
 
 		}).done(function () {
 
@@ -116,20 +114,15 @@ function Game () {
 			
 			var winner = self.judge.checkForWinner();
 
-			if (winner) {
+			if (winner !== null) {
 
 				self.isRunning = false;
-
-				console.log('### END GAME ###');
-				console.log(winner.name + ' won the game!');
-
-				deferred.resolve();
+				resolveGame();
+				
 
 			} else if (!self.judge.checkGameIntegrity()) {
 				
-
-				self.print();
-				throw new Error('### GAMME IS BROKEN! ###');
+				deferred.reject(new Error('Game is broken'));
 
 			} else {
 				
@@ -141,7 +134,23 @@ function Game () {
 		});
 	}
 	
+	function resolveGame (loser) {
 
+		var forceLose = loser || null;
+		var result = [0, 0];
+
+		if (forceLose) {
+ 			
+			result[forceLose] = 0;
+			result[1-forceLose] = 3;
+
+		} else {
+
+			result = self.judge.getVictory();
+		}
+
+		deferred.resolve(result);
+	}
 
 	/**
 	 * Prints the current game board to the console
