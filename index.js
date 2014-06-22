@@ -6,7 +6,7 @@ var Random = require('./src/controllers/Random.js');
 var Aggressive = require('./src/controllers/Aggressive.js')
 
 
-var game = new Game();
+var game = new Game(100);
 
 game.setController(Aggressive, 'Sonja');
 game.setController(Random, 'Pelle');

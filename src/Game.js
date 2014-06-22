@@ -9,10 +9,11 @@ var Q = require('q');
  * 
  * @class
  */
-function Game () {
+function Game (turnDelay) {
 	
 	var self = this;
 
+	self.turnDelay = turnDelay || 0;
 	
 	var turn = 0;
 
@@ -128,7 +129,11 @@ function Game () {
 				
 				if (self.isRunning) {
 					turn++;
-					executeNextTurn();
+					if (self.turnDelay > 0) {
+						setTimeout(executeNextTurn.bind(self), self.turnDelay);
+					} else {
+						executeNextTurn();
+					}
 				}
 			}
 		});
