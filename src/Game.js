@@ -1,4 +1,4 @@
-var clc = require('cli-color');
+var Events = require('events');
 var Judge = require('./Judge.js');
 var Board = require('./Board.js');
 var Q = require('q');
@@ -15,7 +15,8 @@ function Game (turnDelay) {
 
 	self.turnDelay = turnDelay || 0;
 	
-	var turn = 0;
+	self.turn = 0;
+	self.lastDiceRoll = [];
 
 	var deferred = Q.defer();
 
@@ -38,8 +39,8 @@ function Game (turnDelay) {
 	 * Starts the game
 	 */
 	this.start = function () {
+		self.emit('start');
 		executeNextTurn();
-		// self.print();
 		return deferred.promise;
 	}
 
@@ -55,10 +56,10 @@ function Game (turnDelay) {
 
 	
 	this.getCurrentIndex = function () {
-		return turn % 2;
+		return self.turn % 2;
 	}
 	this.getOtherIndex = function () {
-		return 1 - (turn % 2);
+		return 1 - (self.turn % 2);
 	}
 	this.getCurrentPlayer = function () {
 		return self.board.players[self.getCurrentIndex()];
@@ -83,8 +84,7 @@ function Game (turnDelay) {
 		var dice = getDiceRoll();
 		var allLegalMoves = self.board.getAllPermutations(self.getCurrentIndex(), dice);
 		
-
-		console.log('Turn: ' + turn + ' ' + self.getCurrentPlayer().name + ' rolled ' + dice.join(','));
+		self.lastDiceRoll = dice.slice();
 
 		self.getCurrentController().turn(dice.slice(), self.board.copy()).then(function (moves) {
 
@@ -111,7 +111,7 @@ function Game (turnDelay) {
 
 		}).done(function () {
 
-			self.print();
+			self.emit('turn');
 			
 			var winner = self.judge.checkForWinner();
 
@@ -128,7 +128,7 @@ function Game (turnDelay) {
 			} else {
 				
 				if (self.isRunning) {
-					turn++;
+					self.turn++;
 					if (self.turnDelay > 0) {
 						setTimeout(executeNextTurn.bind(self), self.turnDelay);
 					} else {
@@ -154,38 +154,14 @@ function Game (turnDelay) {
 			result = self.judge.getVictory();
 		}
 
+		self.emit('end', result);
 		deferred.resolve(result);
 	}
 
-	/**
-	 * Prints the current game board to the console
-	 * 
-	 * @todo Replace with a seperate class that recieves events from Game class when a move has been made
-	 */
-	this.print = function () {
-		var w = self.board.players[0].checkers.slice().reverse();
-		var b = self.board.players[1].checkers.slice();
-
-
-		console.log(clc.yellowBright(self.board.players[0].name + ' hit: ' + self.board.players[0].hits + ' beared off: ' + self.board.players[0].bearedOff));
-		for (var i = 0; i < 24; i++) {
-			process.stdout.write('- ');
-			if (w[i] > 0) {
-				for (var j=0; j < w[i]; j++) {
-					process.stdout.write(clc.yellowBright('o'));
-				}
-			}
-			if (b[i] > 0) {
-				for (var k=0; k < b[i]; k++) {
-					process.stdout.write(clc.redBright('o'));
-				}
-			}
-			process.stdout.write('\n');
-		}
-		console.log(clc.redBright(self.board.players[1].name + ' hit: ' + self.board.players[1].hits + ' beared off: ' + self.board.players[1].bearedOff));
-
-		
-	}
 }
+
+
+Game.prototype.__proto__ = Events.EventEmitter.prototype;
+
 
 module.exports = Game;

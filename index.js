@@ -1,21 +1,20 @@
 
 
 var Game = require('./src/Game.js');
-
+var Display = require('./src/display/ConsoleLogger.js');
 var Random = require('./src/controllers/Random.js');
 var Aggressive = require('./src/controllers/Aggressive.js')
 
 
 var game = new Game(100);
 
+var display = new Display(game);
+
 game.setController(Aggressive, 'Sonja');
 game.setController(Random, 'Pelle');
 
 game.start().then(function (result) {
-	console.log('GAME IS OVER!', result);
-	console.log(game.board.players[0].name + ' got ' + result[0] + ' points');
-	console.log(game.board.players[1].name + ' got ' + result[1] + ' points');
-	game.print();
+	//...the end...
 });
 
 
