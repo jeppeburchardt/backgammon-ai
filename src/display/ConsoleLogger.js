@@ -20,7 +20,10 @@ function ConsoleLogger (game) {
 
 		console.log(clc.yellowBright(self.game.board.players[0].name + ' hit: ' + self.game.board.players[0].hits + ' beared off: ' + self.game.board.players[0].bearedOff));
 		for (var i = 0; i < 24; i++) {
-			process.stdout.write('- ');
+			process.stdout.write(clc.yellowBright(23-i));
+			process.stdout.write('\t');
+			process.stdout.write(clc.redBright(i));
+			process.stdout.write('\t-\t');
 			if (w[i] > 0) {
 				for (var j=0; j < w[i]; j++) {
 					process.stdout.write(clc.yellowBright('o'));

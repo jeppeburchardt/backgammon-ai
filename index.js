@@ -5,26 +5,27 @@ var Display = require('./src/display/ConsoleLogger.js');
 var Random = require('./src/controllers/Random.js');
 var Safe = require('./src/controllers/Safe.js');
 var Runner = require('./src/controllers/Runner.js');
+var HeatMap = require('./src/controllers/HeatMap.js');
 var Aggressive = require('./src/controllers/Aggressive.js')
 var Tournament = require('./src/Tournament.js');
 
+//*/ Tournament:
 var tournament = new Tournament();
-
 tournament.addPlayer(Aggressive, 'Aggressive');
 tournament.addPlayer(Safe, 'Safe');
-tournament.addPlayer(Random, 'Random');
 tournament.addPlayer(Runner, 'Runner');
+tournament.addPlayer(HeatMap, 'HeatMap');
+tournament.start(10);
+//*/
 
-tournament.start(20);
 
-// var game = new Game(100);
-
-// var display = new Display(game);
-
-// game.setController(Runner, 'Runner');
-// game.setController(Safe, 'Safe');
-
-// game.start();
+/*/ Watch game:
+var game = new Game(500);
+var display = new Display(game);
+game.setController(Safe, 'Safe');
+game.setController(HeatMap, 'HeatMap');
+game.start();
+//*/
 
 
 // test hit player:

@@ -5,6 +5,7 @@ function Safe (id) {
 
 	var self = this;
 	self.id = id;
+	self.safeZone = 0;
 
 	this.turn = function (dice, board) {
 
@@ -12,7 +13,7 @@ function Safe (id) {
 		var result = [];
 		var permutations = board.getAllPermutations(self.id, dice);
 
-		result = findBestPermutation(permutations);
+		result = findBestPermutation(permutations, board);
 
 		//setTimeout(function(){
 			deferred.resolve(result);
@@ -23,11 +24,30 @@ function Safe (id) {
 
 	function applyScoreToPermutation (p) {
 
-		var score = p.board.players[self.id].bearedOff * 10;
+		var me = p.board.players[self.id];
+		var opponent = p.board.players[1-self.id];
 
-		p.board.players[self.id].checkers.forEach(function (val) {
-			if (val === 1) {
-				score -= 1;
+		var score = me.bearedOff * 10;
+
+		score += opponent.hits * 5;
+
+		me.checkers.forEach(function (numCheckers, tile) {
+
+			// bad to be alone behind enemy line
+			if (tile <= self.safeZone && numCheckers === 1) {
+				score -= 10;
+			}
+			// important to not be alone behind enemy line
+			if (tile <= self.safeZone && numCheckers > 1) {
+				score += 10;
+			}
+			// bad to have any checkers behind enemy lines
+			if (tile <= self.safeZone && numCheckers > 0) {
+				score -= numCheckers;
+			}
+			// good to be in the home zone
+			if (tile >= 18) {
+				score += numCheckers;
 			}
 		});
 
@@ -35,7 +55,20 @@ function Safe (id) {
 
 	}
 
-	function findBestPermutation (permutations) {
+	function findBestPermutation (permutations, board) {
+
+		var lowestPositionOfOpponent = 0;
+		board.players[1-self.id].checkers.some(function (num, tile) {
+			if (num > 0) {
+				lowestPositionOfOpponent = tile;
+				return true;
+			}
+			return false;
+		});
+		// reverse direction:
+		lowestPositionOfOpponent = 23 - lowestPositionOfOpponent;
+
+		self.safeZone = board.players[1-self.id].hits > 0 ? 0 : lowestPositionOfOpponent;
 
 		permutations.forEach(applyScoreToPermutation);
 

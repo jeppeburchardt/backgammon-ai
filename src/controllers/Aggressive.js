@@ -26,8 +26,13 @@ function Aggressive (id) {
 		var opponent = 1-self.id;
 
 		var score = p.board.players[opponent].hits * 10;
-
 		score += p.board.players[self.id].bearedOff * 11;
+
+		p.board.players[self.id].checkers.forEach(function (numCheckers, tile) {
+			if (numCheckers === 1) {
+				score -= 0.5;
+			}
+		});
 
 		p.score = score;
 
