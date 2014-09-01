@@ -201,7 +201,7 @@ function Board () {
 			return 'Player tried to move a checker that was hit, but does not have any';
 		}
 		if (tile != -1 && player.checkers[tile] < 1) {
-			return 'Player tried to move a checker that does not exist!\nChecker:'+tile+'\nCheckers'+playerCheckers.join(',');
+			return 'Player tried to move a checker that does not exist!\nChecker:'+tile+'\nCheckers'+player.checkers.join(',');
 		}
 
 		// check if tile exists:
