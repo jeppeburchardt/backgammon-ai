@@ -152,6 +152,13 @@ function Game (turnDelay) {
 			result = self.judge.getVictory();
 		}
 
+		// let the controllers know the result:
+		self.controllers.forEach(function (controller, id) {
+			if (controller.hasOwnProperty('result')) {
+				controller.result(result[id], result[1-id]);
+			}
+		});
+
 		self.emit('end', result);
 		deferred.resolve(result);
 	}
