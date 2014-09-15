@@ -1,6 +1,7 @@
 var Events = require('events');
 var Judge = require('./Judge.js');
 var Board = require('./Board.js');
+var Dice = require('./Dice.js');
 var Q = require('q');
 
 
@@ -22,6 +23,8 @@ function Game (turnDelay) {
 
 	self.board = new Board();
 	self.judge = new Judge(self);
+	self.dice = new Dice();
+
 	self.isRunning = true;
 	self.controllers = [];
 
@@ -45,13 +48,8 @@ function Game (turnDelay) {
 	}
 
 	function getDiceRoll () {
-		var a = Math.floor(6 * Math.random()) + 1;
-		var b = Math.floor(6 * Math.random()) + 1;
-		if (a == b) {
-			return [a, a, a, a];
-		} else {
-			return [a, b];
-		}
+		var roll = self.dice.roll();
+		return self.dice.rollToMoves(roll);
 	}
 
 	
