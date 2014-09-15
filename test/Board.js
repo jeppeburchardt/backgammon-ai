@@ -83,9 +83,23 @@ describe('Board', function () {
 			assert.notEqual(false, board.isMoveIllegal(0, 6, 5));
 		});
 
-		it('should test for bearing off rules', function () {
-			throw new Error('Not implemented yet!');
+		it('can not bear off checker if hit', function () {
+			board.players[0].checkers = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,2,0];
+			board.players[0].hits = 1;
+			assert.notEqual(false, board.isMoveIllegal(0, 22, 2));
 		});
+
+		it('can not bear off checkers if not all checkers are in the home zone', function () {
+			board.players[0].checkers = [2,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,2,0];
+			assert.notEqual(false, board.isMoveIllegal(0, 22, 2));
+		});
+
+		it('can not bear off a checker on a die roll, that is higher than required, if there is another checker to move', function () {
+			board.players[0].checkers = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,1];
+			assert.notEqual(false, board.isMoveIllegal(0, 23, 2));
+		});
+
+
 
 	});
 
