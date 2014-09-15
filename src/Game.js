@@ -43,7 +43,7 @@ function Game (turnDelay) {
 	 */
 	this.start = function () {
 		self.emit('start');
-		executeNextTurn();
+		executeFirstRoll();
 		return deferred.promise;
 	}
 
@@ -72,14 +72,38 @@ function Game (turnDelay) {
 		return self.controllers[self.getOtherIndex()];
 	}
 
+	function executeFirstRoll () {
+
+		var roll = [null, null];
+
+		while (roll[0] === roll[1]) {
+			roll = self.dice.roll();
+
+			console.log(self.board.players[0].name, 'rolls a', roll[0]);
+			console.log(self.board.players[1].name, 'rolls a', roll[1]);
+
+			if (roll[0] > roll[1]) {
+				//controller 0 goes first:
+				console.log(self.board.players[0].name, 'starts the game');
+				executeNextTurn(self.dice.rollToMoves(roll));
+
+			} else if (roll[0] < roll[1]) {
+				//controller 1 goes first:
+				console.log(self.board.players[1].name, 'starts the game');
+				self.turn ++; //TODO: reverse order of controllers, instead of increasing turn
+				executeNextTurn(self.dice.rollToMoves(roll));
+			}
+		}
+	}
+
 	/**
 	 * Executes the game
 	 *
 	 * @private
 	 */
-	function executeNextTurn () {
+	function executeNextTurn (forceRoll) {
 		
-		var dice = getDiceRoll();
+		var dice = forceRoll || getDiceRoll();
 		var allLegalMoves = self.board.getAllPermutations(self.getCurrentIndex(), dice);
 		
 		self.lastDiceRoll = dice.slice();
