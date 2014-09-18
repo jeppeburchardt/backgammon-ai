@@ -2,6 +2,7 @@ module.exports = {
 
 	Board : require('./Board'),
 	Dice : require('./Dice'),
+	Display: require('./display/ConsoleLogger'),
 	Game : require('./Game'),
 	Player : require('./Player'),
 	Tournament : require('./Tournament'),

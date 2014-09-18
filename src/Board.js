@@ -10,6 +10,10 @@ function Board () {
 	];
 
 	this.initialCheckers = function () {
+		self.players[0].hits = 0;
+		self.players[1].hits = 0;
+		self.players[0].bearedOff = 0;
+		self.players[1].bearedOff = 0;
 		self.players[0].checkers = [2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 5, 0, 0, 0, 0, 3, 0, 5, 0, 0, 0, 0, 0];
 		self.players[1].checkers = [2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 5, 0, 0, 0, 0, 3, 0, 5, 0, 0, 0, 0, 0];
 	}
