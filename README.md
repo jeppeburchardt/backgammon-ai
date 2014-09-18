@@ -7,17 +7,23 @@ npm test
 npm link
 ````
 
-Rinning standalone
+Running standalone
 ==================
 Tournament
+----------
+Run 10 matches against each player/controller
 ````
 bgai tournament -g 10 Aggressive PrimerEndGame Safe
 ````
 Game
+----
+Watch a match with stunning graphics
 ````
 bgai game -d 200 Aggressive PrimerEndGame
 ````
 Trainer
+-------
+Run 100 matches against one or more players/controllers
 ````
 bgai trainer -g 100 Aggressive PrimerEndGame
 ````
