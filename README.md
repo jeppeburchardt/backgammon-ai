@@ -24,10 +24,10 @@ bgai trainer -g 100 Aggressive PrimerEndGame
 
 As a module
 ===========
-````
+````javascript
 var bg = require('backgammon-ai');
 
-var game = new bg.Game(argv.d);
+var game = new bg.Game(200);
 var display = new bg.Display(game);
 game.setController(bg.controllers.Aggressive, 'Aggressive');
 game.setController(bg.controllers.PrimerEndGame, 'PrimerEndGame');
