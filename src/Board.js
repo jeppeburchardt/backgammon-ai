@@ -184,6 +184,9 @@ function Board () {
 		}
 	}
 
+	/**
+	 * @return	mixed	false if move is legal or a string explaining why the move is illegal
+	 */
 	this.isMoveIllegal = function (id, tile, distance) {
 
 		var player = self.players[id];

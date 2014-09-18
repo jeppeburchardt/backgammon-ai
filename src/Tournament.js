@@ -33,6 +33,7 @@ function Tournament () {
 
 		var matches = matches || 1;
 		var games = [];
+		var done = 0;
 
 		for (var i = 0; i < matches; i++) {
 
@@ -47,7 +48,9 @@ function Tournament () {
 				var gamePromise = game.start();
 				games.push(gamePromise);
 				gamePromise.then(function (result) {
+					done++;
 					console.log(game.board.players[0].name + ' vs ' + game.board.players[1].name + ' ended ' + result[0] + '-' + result[1]);
+					console.log(' completed ' + done + '/' + games.length);
 					addScoreToPlayer(game.board.players[0].name, result[0]);
 					addScoreToPlayer(game.board.players[1].name, result[1]);
 				});
