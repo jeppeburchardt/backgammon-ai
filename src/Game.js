@@ -33,7 +33,8 @@ function Game (turnDelay) {
 
 	this.setController = function (controller, name) {
 		var id = self.controllers.length;
-		self.controllers.push(new controller(id));
+		controller.id = id;
+		self.controllers.push(controller);
 		self.board.players[id].name = name;
 	}
 

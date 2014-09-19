@@ -30,8 +30,8 @@ switch (mode.toLowerCase()) {
 		if (argv._.length != 3) { optimist.showHelp(); process.exit(); }
 		var game = new Game(argv.d);
 		var display = new Display(game);
-		game.setController(this[argv._[1]], argv._[1]);
-		game.setController(this[argv._[2]], argv._[2]);
+		game.setController(new this[argv._[1]](), argv._[1]);
+		game.setController(new this[argv._[2]](), argv._[2]);
 		game.start();
 	break;
 

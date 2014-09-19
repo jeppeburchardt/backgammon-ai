@@ -43,8 +43,8 @@ function Tournament () {
 				console.log(a.name + ' vs ' + b.name + ' started game ' + (i+1));
 					
 				var game = new Game();
-				game.setController(a.controller, a.name);
-				game.setController(b.controller, b.name);
+				game.setController(new a.controller(), a.name);
+				game.setController(new b.controller(), b.name);
 				var gamePromise = game.start();
 				games.push(gamePromise);
 				gamePromise.then(function (result) {
