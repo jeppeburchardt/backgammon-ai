@@ -61,8 +61,8 @@ function Trainer () {
 		console.log('Starting new match between', a.name, 'and', b.name);
 
 		var game = new Game();
-		game.setController(a.controller, a.name);
-		game.setController(b.controller, b.name);
+		game.setController(new a.controller(), a.name);
+		game.setController(new b.controller(), b.name);
 		var gamePromise = game.start();
 		gamePromise.then(function (result) {
 			console.log(game.board.players[0].name + ' vs ' + game.board.players[1].name + ' ended ' + result[0] + '-' + result[1]);
