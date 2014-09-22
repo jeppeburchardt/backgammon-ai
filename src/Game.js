@@ -106,14 +106,18 @@ function Game (turnDelay) {
 		
 		var dice = forceRoll || getDiceRoll();
 		var allLegalMoves = self.board.getAllPermutations(self.getCurrentIndex(), dice);
+		var playerMoves = [];
 		
 		self.lastDiceRoll = dice.slice();
+
+		self.emit('turnStart', self.getCurrentIndex(), dice.slice());
 
 		self.getCurrentController().turn(dice.slice(), self.board.copy()).then(function (moves) {
 
 			var isMoveLegal = allLegalMoves.some(function (p) {
 				return JSON.stringify(p.moves) === JSON.stringify(moves);
 			});
+			playerMoves = moves;
 
 			if (isMoveLegal) {
 				moves.forEach(function (move) {
@@ -122,6 +126,7 @@ function Game (turnDelay) {
 			} else {
 
 				//controller.turn tried to make an illegal move, player loses
+				console.log('player', self.getCurrentPlayer().name, 'tried an illegal move and loses');
 				self.isRunning = false;
 				resolveGame(self.getCurrentIndex());
 			}
@@ -129,12 +134,13 @@ function Game (turnDelay) {
 		}).fail(function (error) {
 			
 			//controller.turn threw an exception, player loses
+			console.log('player', self.getCurrentPlayer().name, '\'s tuen threw an exception and loses');
 			self.isRunning = false;
 			resolveGame(self.getCurrentIndex());
 
 		}).done(function () {
 
-			self.emit('turn');
+			self.emit('turn', self.getCurrentIndex(), playerMoves);
 			
 			var winner = self.judge.checkForWinner();
 
