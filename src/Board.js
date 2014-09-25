@@ -10,6 +10,7 @@ function Board () {
 	];
 
 	this.initialCheckers = function () {
+	    self.turn = 0;
 		self.players[0].hits = 0;
 		self.players[1].hits = 0;
 		self.players[0].bearedOff = 0;
@@ -235,10 +236,26 @@ function Board () {
 					return 'Player tried to bear off a checker, before all checkers are in the home zone!';
 				}
 			}
+			if (tile + distance != 24 && tile != getLastPosition(player.checkers)) {
+			    return 'A die may not be used to bear off checkers from a lower-numbered point unless there are no checkers on any higher points.!';
+			}
 		}
 
 		return false;
 	};
+	function getLastPosition(checkers) {
+
+	    var lowestPosition = 0;
+	    checkers.some(function (num, tile) {
+	        if (num > 0) {
+	            lowestPosition = tile;
+	            return true;
+	        }
+	        return false;
+	    });
+
+	    return lowestPosition;
+	}
 }
 
 
