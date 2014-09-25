@@ -80,17 +80,17 @@ function Game (turnDelay) {
 		while (roll[0] === roll[1]) {
 			roll = self.dice.roll();
 
-			console.log(self.board.players[0].name, 'rolls a', roll[0]);
-			console.log(self.board.players[1].name, 'rolls a', roll[1]);
+			//console.log(self.board.players[0].name, 'rolls a', roll[0]);
+			//console.log(self.board.players[1].name, 'rolls a', roll[1]);
 
 			if (roll[0] > roll[1]) {
 				//controller 0 goes first:
-				console.log(self.board.players[0].name, 'starts the game');
+				//console.log(self.board.players[0].name, 'starts the game');
 				executeNextTurn(self.dice.rollToMoves(roll));
 
 			} else if (roll[0] < roll[1]) {
 				//controller 1 goes first:
-				console.log(self.board.players[1].name, 'starts the game');
+				//console.log(self.board.players[1].name, 'starts the game');
 				self.turn ++; //TODO: reverse order of controllers, instead of increasing turn
 				executeNextTurn(self.dice.rollToMoves(roll));
 			}
@@ -157,7 +157,8 @@ function Game (turnDelay) {
 			} else {
 				
 				if (self.isRunning) {
-					self.turn++;
+				    self.turn++;
+				    self.board.turn++;
 					if (self.turnDelay > 0) {
 						setTimeout(executeNextTurn.bind(self), self.turnDelay);
 					} else {
