@@ -7,6 +7,8 @@ var Safe = this.Safe = require('../src/controllers/Safe.js');
 var Runner = this.Runner = require('../src/controllers/Runner.js');
 var PrimerEndGame = this.PrimerEndGame = require('../src/controllers/PrimerEndGame.js');
 var Aggressive = this.Aggressive = require('../src/controllers/Aggressive.js')
+var TestA = this.TestA = require('../src/controllers/TestA.js');
+var TestB = this.TestB = require('../src/controllers/TestB.js');
 var Tournament = require('../src/Tournament.js');
 var Trainer = require('../src/Trainer.js');
 
