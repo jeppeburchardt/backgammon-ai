@@ -2,6 +2,7 @@
 
 var Game = require('../src/Game.js');
 var Display = require('../src/display/ConsoleLogger.js');
+var TournamentTable = require('../src/display/TournamentTable');
 var Random = this.Random = require('../src/controllers/Random.js');
 var Safe = this.Safe = require('../src/controllers/Safe.js');
 var Runner = this.Runner = require('../src/controllers/Runner.js');
@@ -39,6 +40,7 @@ switch (mode.toLowerCase()) {
 	case 'tournament':
 		if (argv._.length < 3) { optimist.showHelp(); process.exit(); }
 		var tournament = new Tournament(argv.d);
+		var table = new TournamentTable(tournament);
 		for (var i = 1; i < argv._.length; i++) {
 			tournament.addPlayer(this[argv._[i]], argv._[i]);
 		}

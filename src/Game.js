@@ -1,7 +1,8 @@
 var Events = require('events');
-var Judge = require('./Judge.js');
-var Board = require('./Board.js');
-var Dice = require('./Dice.js');
+var Judge = require('./Judge');
+var Board = require('./Board');
+var Dice = require('./Dice');
+var GameResult = require('./GameResult');
 var Q = require('q');
 
 
@@ -13,6 +14,8 @@ var Q = require('q');
 function Game (turnDelay) {
 	
 	var self = this;
+
+	self.result = new GameResult(self);
 
 	self.turnDelay = turnDelay || 0;
 	
@@ -80,17 +83,10 @@ function Game (turnDelay) {
 		while (roll[0] === roll[1]) {
 			roll = self.dice.roll();
 
-			console.log(self.board.players[0].name, 'rolls a', roll[0]);
-			console.log(self.board.players[1].name, 'rolls a', roll[1]);
-
 			if (roll[0] > roll[1]) {
-				//controller 0 goes first:
-				console.log(self.board.players[0].name, 'starts the game');
 				executeNextTurn(self.dice.rollToMoves(roll));
 
 			} else if (roll[0] < roll[1]) {
-				//controller 1 goes first:
-				console.log(self.board.players[1].name, 'starts the game');
 				self.turn ++; //TODO: reverse order of controllers, instead of increasing turn
 				executeNextTurn(self.dice.rollToMoves(roll));
 			}
@@ -104,6 +100,7 @@ function Game (turnDelay) {
 	 */
 	function executeNextTurn (forceRoll) {
 		
+		var turnStartTime = new Date().getTime();
 		var dice = forceRoll || getDiceRoll();
 		var allLegalMoves = self.board.getAllPermutations(self.getCurrentIndex(), dice);
 		var playerMoves = [];
@@ -141,9 +138,8 @@ function Game (turnDelay) {
 		}).done(function () {
 
 			self.emit('turn', self.getCurrentIndex(), playerMoves);
-			
-			var winner = self.judge.checkForWinner();
 
+			var winner = self.judge.checkForWinner();
 			if (winner !== null) {
 
 				self.isRunning = false;
@@ -168,30 +164,10 @@ function Game (turnDelay) {
 		});
 	}
 	
-	function resolveGame (loser) {
-
-		var forceLose = loser || null;
-		var result = [0, 0];
-
-		if (forceLose) {
- 			
-			result[forceLose] = 0;
-			result[1-forceLose] = 3;
-
-		} else {
-
-			result = self.judge.getVictory();
-		}
-
-		// let the controllers know the result:
-		self.controllers.forEach(function (controller, id) {
-			if (controller.hasOwnProperty('result')) {
-				controller.result(result[id], result[1-id]);
-			}
-		});
-
-		self.emit('end', result);
-		deferred.resolve(result);
+	function resolveGame (forceLose) {
+		self.emit('end', forceLose);
+		self.emit('result', self.result.result);
+		deferred.resolve(self.result.result);
 	}
 
 }

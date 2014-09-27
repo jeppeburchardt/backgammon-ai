@@ -1,4 +1,6 @@
-var Game = require('./Game.js');
+var Events = require('events');
+var Game = require('./Game');
+var TournamentResult = require('./TournamentResult');
 var Q = require('q');
 
 function Tournament () {
@@ -6,30 +8,18 @@ function Tournament () {
 	var self = this;
 
 	self.players = [];
+	self.result = new TournamentResult(this);
 
 	this.addPlayer = function (controller, name) {
-
 		self.players.push({
 			name: name,
-			controller: controller,
-			score: 0,
-			games: 0
+			controller: controller
 		});
 	}
 
-	function addScoreToPlayer (name, score) {
-
-		self.players.some(function (player) {
-			if (player.name == name) {
-				player.score += score;
-				player.games ++;
-				return true;
-			}
-			return false;
-		})
-	}
-
 	this.start = function (matches) {
+
+		self.emit('starting');
 
 		var matches = matches || 1;
 		var games = [];
@@ -37,11 +27,7 @@ function Tournament () {
 
 		for (var i = 0; i < matches; i++) {
 
-			// use sort to run one match between every player
-
 			self.players.sort(function (a, b) {
-				console.log(a.name + ' vs ' + b.name + ' started game ' + (i+1));
-					
 				var game = new Game();
 				game.setController(new a.controller(), a.name);
 				game.setController(new b.controller(), b.name);
@@ -49,26 +35,22 @@ function Tournament () {
 				games.push(gamePromise);
 				gamePromise.then(function (result) {
 					done++;
-					console.log(game.board.players[0].name + ' vs ' + game.board.players[1].name + ' ended ' + result[0] + '-' + result[1]);
-					console.log(' completed ' + done + '/' + games.length);
-					addScoreToPlayer(game.board.players[0].name, result[0]);
-					addScoreToPlayer(game.board.players[1].name, result[1]);
+					self.emit('progress', Math.round((done / games.length) * 100) / 100, result);
 				});
 				return 1;
 			});
 		}
 
-		console.log('Started ' + games.length + ' games...');
+		self.emit('started', games.length);
 
 		Q.all(games).then(function () {
-			console.log('All games completed!');
-			self.players.sort(function (a, b) { return b.score - a.score; });
-			self.players.forEach(function (player) {
-				console.log(player.name + '\tscored:\t' + player.score + '\tavarage:\t' + (player.score / player.games));
-			})
+			self.emit('end');
+			self.emit('result', self.result.result);
 		});
 	}
 
 }
+
+Tournament.prototype.__proto__ = Events.EventEmitter.prototype;
 
 module.exports = Tournament;

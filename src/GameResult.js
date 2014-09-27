@@ -1,0 +1,81 @@
+
+function GameResult(game) {
+
+	var self = this;
+
+	self.game = game;
+	self.startTime = null;
+	self.result = {
+		players: [
+			{
+				name:'',
+				score:0,
+				pips:0,
+				moves:0,
+				eyes:0,
+				time:0,
+				blockedOpponentMoves:0,
+				blockedMoves:0
+			},
+			{
+				name:'',
+				score:0,
+				pips:0,
+				moves:0,
+				eyes:0,
+				time:0,
+				blockedOpponentMoves:0,
+				blockedMoves:0
+			}
+		],
+		time: 0,
+		turns: 0
+	};
+
+	self.game.on('start', function () {
+		self.result.players[0].name = self.game.board.players[0].name;
+		self.result.players[1].name = self.game.board.players[1].name;
+		self.startTime = new Date().getTime();
+	});
+
+	self.game.on('turnStart', function (playerId, dice) {
+		self.result.players[playerId].eyes += dice.reduce(function (a,b) {return a+b;});
+		self.currentTurnStartTime = new Date().getTime();
+	});
+
+	self.game.on('turn', function (playerId, moves) {
+		self.result.players[playerId].time += (new Date().getTime() - self.currentTurnStartTime);
+		self.result.players[playerId].moves ++;
+		if (moves.length < 2) {
+			self.result.players[playerId].blockedMoves += (2 - moves.length);
+			self.result.players[1-playerId].blockedOpponentMoves += (2 - moves.length);
+		}
+	});
+
+	function pipsReducer (previousValue, currentValue, index, array) {
+		return previousValue + (currentValue * (index+1));
+	}
+	function countPips (checkers, hits, bearedOff) {
+		return checkers.reduce(pipsReducer, (hits*-1) + (bearedOff*24));
+	}
+
+	self.game.on('end', function (forceLose) {
+		self.result.time = (new Date().getTime()) - self.startTime;
+		self.result.turns = self.game.turn;
+		self.result.players[0].pips = countPips(self.game.board.players[0].checkers, self.game.board.players[0].hits, self.game.board.players[0].bearedOff);
+		self.result.players[1].pips = countPips(self.game.board.players[1].checkers, self.game.board.players[1].hits, self.game.board.players[1].bearedOff);
+		self.result.players[0].eyes = self.result.players[0].eyes / self.result.players[0].moves;
+		self.result.players[1].eyes = self.result.players[0].eyes / self.result.players[1].moves;
+		if (forceLose == undefined) {
+			var victory = self.game.judge.getVictory();
+			self.result.players[0].score = victory[0];
+			self.result.players[1].score = victory[1];
+		} else {
+			self.result.players[forceLose].score = 0;
+			self.result.players[1-forceLose].score = 3;
+		}
+	});
+
+}
+
+module.exports = GameResult;
