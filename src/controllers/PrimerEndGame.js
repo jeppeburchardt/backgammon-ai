@@ -66,14 +66,12 @@ function PrimerEndGame(id) {
                 if (numCheckers >= 2 && tile > 17 && p.board.players[opponent].hits > 0) {
                     score += 1;
                 }
+                // Priming a long chain of blocked tiles is good
                 if (numCheckers >= 2 && tile > 0 && p.board.players[self.id].checkers[tile - 1] >= 2) {
                     score += 1;
                 }
 
             });
-            if (p.board.players[self.id].checkers[23] >= 2 && p.board.players[self.id].checkers[24] >= 2) {
-                score += 1;
-            }
 
             if (p.board.players[self.id].checkers[16] > 2) {
                 score += 1;
@@ -109,7 +107,7 @@ function PrimerEndGame(id) {
         return board.players[1 - self.id].hits > 0 ? 24 : lowestPositionOfOpponent;
     };
     self.lowestPositionOfSelf = function (board) {
-        var lowestPositionOfSelf = getlowestPosition(board.players[1 - self.id].checkers);
+        var lowestPositionOfSelf = getlowestPosition(board.players[self.id].checkers);
 
         return board.players[self.id].hits > 0 ? -1 : lowestPositionOfSelf;
 

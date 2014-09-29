@@ -1,7 +1,7 @@
 var Q = require('q');
 //Arthor: P. S. Wille
 
-function TestB(id) {
+function PrimerEndGame(id) {
 
     var self = this;
     self.id = id;
@@ -20,29 +20,7 @@ function TestB(id) {
 
         return deferred.promise;
     }
-    function equals(array1, array2) {
-        // if the other array is a falsy value, return
-        if (!array1)
-            return false;
 
-        // compare lengths - can save a lot of time 
-        if (array1.length != array2.length)
-            return false;
-
-        for (var i = 0, l = array1.length; i < l; i++) {
-            // Check if we have nested arrays
-            if (array1[i] instanceof Array && array2[i] instanceof Array) {
-                // recurse into the nested arrays
-                if (!this[i].equals(array2[i]))
-                    return false;
-            }
-            else if (array1[i] != array2[i]) {
-                // Warning - two different object instances will never be equal: {x:20} != {x:20}
-                return false;
-            }
-        }
-        return true;
-    }
     function applyScoreToPermutation(p) {
 
         var opponent = 1 - self.id;
@@ -50,58 +28,12 @@ function TestB(id) {
         var lowestPosition = self.lowestPositionOfSelf(p.board);
 
         var endgame = lowestPositionOfOpponent < lowestPosition;
-        
 
         var score = 0;
 
 
-        
-        
-        
-        if (equals(p.board.players[opponent].checkers,[2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 5, 0, 0, 0, 0, 3, 0, 5, 0, 0, 0, 0, 0]) === true) {
-           
-                //2-1
-            if (equals(p.board.players[self.id].checkers, [1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 4, 0, 1, 0, 0, 3, 0, 5, 0, 0, 0, 0, 0]) === true) {
-                    console.log("2-1");
-                    p.score = 100;
-                    return;
-                }
-                //3-1
-            if (equals(p.board.players[self.id].checkers, [2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 5, 0, 0, 0, 0, 2, 0, 4, 2, 0, 0, 0, 0]) === true) {
-                console.log("3-1");
-                    p.score = 100;
-                    return;
-                }
-                //3-2
-            if (equals(p.board.players[self.id].checkers, [2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 0, 1, 1, 0, 3, 0, 5, 0, 0, 0, 0, 0]) === true) {
-                console.log("3-2");
-                    p.score = 100;
-                    return;
-                }
-            if (equals(p.board.players[self.id].checkers, [1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 4, 0, 0, 0, 1, 3, 0, 5, 0, 0, 0, 0, 0]) === true) {
-                console.log("4-1");
-                    p.score = 100;
-                    return;
-                }
-            if (equals(p.board.players[self.id].checkers, [2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 5, 0, 0, 0, 0, 2, 0, 4, 0, 2, 0, 0, 0]) === true) {
-                console.log("4-2");
-                    p.score = 100;
-                    return;
-            }
-            if (equals(p.board.players[self.id].checkers, [2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 0, 0, 1, 1, 3, 0, 5, 0, 0, 0, 0, 0]) === true) {
-                console.log("4-3");
-                p.score = 100;
-                return;
-            }
-            if (equals(p.board.players[self.id].checkers, [2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 5, 0, 0, 0, 0, 3, 0, 5, 0, 0, 0, 0, 0]) === true) {
-                console.log("5-1");
-                p.score = 100;
-                return;
-            }
-                
-         }
-            
         score += p.board.players[self.id].bearedOff * 12;
+
         if (endgame) {
             score += 4;
 
@@ -134,12 +66,14 @@ function TestB(id) {
                 if (numCheckers >= 2 && tile > 17 && p.board.players[opponent].hits > 0) {
                     score += 1;
                 }
-                // Priming a long chain of blocked tiles is good
                 if (numCheckers >= 2 && tile > 0 && p.board.players[self.id].checkers[tile - 1] >= 2) {
                     score += 1;
                 }
 
             });
+            if (p.board.players[self.id].checkers[23] >= 2 && p.board.players[self.id].checkers[24] >= 2) {
+                score += 1;
+            }
 
             if (p.board.players[self.id].checkers[16] > 2) {
                 score += 1;
@@ -175,7 +109,7 @@ function TestB(id) {
         return board.players[1 - self.id].hits > 0 ? 24 : lowestPositionOfOpponent;
     };
     self.lowestPositionOfSelf = function (board) {
-        var lowestPositionOfSelf = getlowestPosition(board.players[self.id].checkers);
+        var lowestPositionOfSelf = getlowestPosition(board.players[1 - self.id].checkers);
 
         return board.players[self.id].hits > 0 ? -1 : lowestPositionOfSelf;
 
@@ -196,4 +130,5 @@ function TestB(id) {
 
 }
 
-module.exports = TestB;
+
+module.exports = PrimerEndGame;

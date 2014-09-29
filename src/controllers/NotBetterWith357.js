@@ -26,36 +26,60 @@ function TestA(id) {
         var opponent = 1 - self.id;
         var lowestPositionOfOpponent = self.lowestPositionOfOpponent(p.board);
         var lowestPosition = self.lowestPositionOfSelf(p.board);
+        var checkersOnBoard = (15 - p.board.players[self.id].bearedOff);
+        var pip = getPip(p.board.players[self.id].checkers);
+        var pipOfOpponent = getPip(p.board.players[opponent].checkers);
 
         var endgame = lowestPositionOfOpponent < lowestPosition;
 
         var score = 0;
 
 
-        score += p.board.players[self.id].bearedOff * 12;
-
         if (endgame) {
-            score += 4;
+            if (pip > pipOfOpponent + 10) {
+                score += 40;
+            }
+            else {
+                score += 4;
+            }
 
-            //everybodys home
-            score += (24 - lowestPosition) > 6 ? 20 : 0;
+            var tilesOccupied = (23 - lowestPosition);
+            var DistributionGoal = tilesOccupied / checkersOnBoard;
 
-            var tilesOccupied = (24 - lowestPosition) > 6 ? (24 - lowestPosition) : 6;
-
-            var DistributionGoal = tilesOccupied / (15 - p.board.players[self.id].bearedOff);
-
+            //playing to get a 3-5-7 at home and even distribution outside 
             p.board.players[self.id].checkers.forEach(function (numCheckers, tile) {
-                score -= Math.abs(DistributionGoal + numCheckers);
+                if (tile >= 18) {
+                    score -= Math.abs(7.4 - 2.4 * (tile - 18) - numCheckers);
+                } else {
+                    score -= Math.abs(DistributionGoal - numCheckers);
+                }
+                //Pip score
+                score -= 0.5 * pip;
+
 
             });
-        }
-        else {
-
+        } else {
+            score += p.board.players[self.id].bearedOff * 12;
             score += p.board.players[opponent].hits * 3.5;
+
+            //Pip score
+            //score -= 0.7 * pip;
 
             p.board.players[self.id].checkers.forEach(function (numCheckers, tile) {
                 if (numCheckers == 1) {
-                    score -= (0.2 * tile);
+                    //playing to get a 222-333 at home 
+                    if (tile >= 21) {
+                        score -= 0.1 * Math.abs(((2 * 15) / checkersOnBoard) - numCheckers);
+                    } else if (tile >= 18) {
+                        score -= 0.1 * Math.abs(((3 * 15) / checkersOnBoard) - numCheckers);
+                    }
+                    //it bad to be alone
+                    if (tile >= 18) {
+                        score -= (0.2 * 20);
+                    } else {
+                        score -= (0.2 * tile);
+                    }
+
 
                     //Home is exposed so its bad to hit
                     if (tile > 16 && p.board.players[opponent].hits > 0) {
@@ -112,6 +136,7 @@ function TestA(id) {
         return board.players[self.id].hits > 0 ? -1 : lowestPositionOfSelf;
 
     };
+
     function getlowestPosition(checkers) {
 
         var lowestPosition = 0;
@@ -126,6 +151,17 @@ function TestA(id) {
         return lowestPosition;
     }
 
+    function getPip(checkers) {
+        var pip = 0;
+        checkers.forEach(function (numCheckers, tile) {
+            //Pip score
+            pip += (numCheckers * (24 - tile));
+
+
+        });
+
+        return pip;
+    }
 }
 
 module.exports = TestA;
