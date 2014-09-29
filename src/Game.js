@@ -137,7 +137,7 @@ function Game (turnDelay) {
 
 		}).done(function () {
 
-			self.emit('turn', self.getCurrentIndex(), playerMoves);
+		    self.emit('turn', self.getCurrentIndex(), playerMoves, dice.slice());
 
 			var winner = self.judge.checkForWinner();
 			if (winner !== null) {
