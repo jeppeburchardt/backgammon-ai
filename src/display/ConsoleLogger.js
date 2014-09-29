@@ -41,14 +41,20 @@ function ConsoleLogger (game) {
 	}
 
 	this.end = function (result) {
-		console.log('GAME IS OVER!', result);
-		console.log(self.game.board.players[0].name + ' got ' + result[0] + ' points');
-		console.log(self.game.board.players[1].name + ' got ' + result[1] + ' points');
+		console.log('GAME IS OVER!');
+		// console.log(self.game.board.players[0].name + ' got ' + result[0] + ' points');
+		// console.log(self.game.board.players[1].name + ' got ' + result[1] + ' points');
+	}
+
+	this.result = function (result) {
+		console.log('RESULT:');
+		console.log('Game took ' + result.time + 'ms');
+		console.log(result);
 	}
 
 	self.game.on('turn', self.print.bind(self));
 	self.game.on('end', self.end.bind(self));
-
+	self.game.on('result', self.result.bind(self));
 }
 
 

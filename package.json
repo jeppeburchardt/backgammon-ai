@@ -14,7 +14,8 @@
   "dependencies": {
     "cli-color": "~0.3.2",
     "q": "~1.0.1",
-    "optimist": "~0.6.1"
+    "optimist": "~0.6.1",
+    "cli-table": "~0.3.0"
   },
   "devDependencies": {
     "mocha": "~1.21.4"
