@@ -222,11 +222,6 @@ function Board () {
 			return 'Player tried to move a checker to a tile that is occupied by an opponent checker!';
 		}
 
-		// check if tile is occupired by 5 checkers of own kind:
-		if (player.checkers[tile+distance] > 4) {
-			return 'Player tried to move a checker to a tile with 5 checkers of own kind';
-		}
-
 		// check if checker is moving home and is allowed to:
 		// TODO: A die may not be used to bear off checkers from a lower-numbered point unless there are no checkers on any higher points.
 		if (tile + distance >= 24) {
