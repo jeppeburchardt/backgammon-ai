@@ -1,6 +1,8 @@
 backgammon-ai
 =============
 
+[![Build Status](https://drone.io/github.com/kosmobot/backgammon-ai/status.png)](https://drone.io/github.com/kosmobot/backgammon-ai/latest)
+
 ````
 npm install
 npm test
