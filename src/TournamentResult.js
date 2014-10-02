@@ -16,8 +16,6 @@ function TournamentResult(tournament) {
 		return sum / results.length;
 	};
 
-	
-
 	self.tournament.on('end', function () {
 		
 		self.tournament.players.forEach(function(p){

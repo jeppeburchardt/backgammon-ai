@@ -136,7 +136,7 @@ function Game (turnDelay) {
 			resolveGame(self.getCurrentIndex());
 
 		}).done(function () {
-
+			
 		    self.emit('turn', self.getCurrentIndex(), playerMoves, dice.slice());
 
 			var winner = self.judge.checkForWinner();
