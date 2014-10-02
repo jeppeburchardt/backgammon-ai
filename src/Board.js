@@ -1,5 +1,8 @@
 var Player = require('./Player.js');
 
+/**
+@class
+*/
 function Board () {
 	
 	var self = this;
@@ -17,6 +20,15 @@ function Board () {
 		self.players[1].bearedOff = 0;
 		self.players[0].checkers = [2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 5, 0, 0, 0, 0, 3, 0, 5, 0, 0, 0, 0, 0];
 		self.players[1].checkers = [2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 5, 0, 0, 0, 0, 3, 0, 5, 0, 0, 0, 0, 0];
+	}
+
+	this.initialEndGameCheckers = function () {
+		self.players[0].hits = 0;
+		self.players[1].hits = 0;
+		self.players[0].bearedOff = 0;
+		self.players[1].bearedOff = 0;
+		self.players[0].checkers = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 3, 3, 2, 2, 2];
+		self.players[1].checkers = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 3, 3, 2, 2, 2];
 	}
 
 	this.copy = function () {
@@ -222,13 +234,6 @@ function Board () {
 		if (reversedOpponentCheckers[tile+distance] > 1) {
 			return 'Player tried to move a checker to a tile that is occupied by an opponent checker!';
 		}
-
-
-	    //  check if tile is occupired by 5 checkers of own kind:
-		//This is a legal move
-		//if (player.checkers[tile+distance] > 4) {
-		//	return 'Player tried to move a checker to a tile with 5 checkers of own kind';
-		//}
 
 		// check if checker is moving home and is allowed to:
 		// TODO: A die may not be used to bear off checkers from a lower-numbered point unless there are no checkers on any higher points.

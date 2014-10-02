@@ -26,6 +26,11 @@ function Judge (game) {
 			// throw new Error('1 does not have 24 checkers');
 			return false;
 		}
+		for (var i = 0; i < 24; i++) {
+			if (this.game.board.players[0].checkers[(23-i)] != 0 && this.game.board.players[1].checkers[i] != 0) {
+				return false;
+			}
+		}
 		var num = 0;
 		this.game.board.players.forEach(function (player) {
 			num += player.checkers.reduce(function(prev, curr){
