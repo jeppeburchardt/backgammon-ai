@@ -108,7 +108,7 @@ describe('Board', function () {
 
 	describe('#getAllPermutations', function () {
 
-		xit('can not bear off a checker on a die roll, that is higher than required, if there is another checker to move', function () {
+		it('can not bear off a checker on a die roll, that is higher than required, if there is another checker to move', function () {
 			board.players[0].checkers = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,1];
 			board.players[1].checkers = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,1];
 			var p = board.getAllPermutations(0, [2, 2]);
