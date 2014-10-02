@@ -56,7 +56,7 @@ function Trainer () {
 			return false;
 		})
 	}
-
+    
 	this.start = function (games)  {
 		self.totalGames = games;
 		self.next();
@@ -75,8 +75,8 @@ function Trainer () {
 		var gamePromise = game.start();
 		gamePromise.then(function (result) {
 			//console.log(game.board.players[0].name + ' vs ' + game.board.players[1].name + ' ended ' + result[0] + '-' + result[1]);
-			addScoreToPlayer(game.board.players[0].name, result[0].score);
-			addScoreToPlayer(game.board.players[1].name, result[1].score);
+		    addScoreToPlayer(game.board.players[0].name, result.players[0].score);
+		    addScoreToPlayer(game.board.players[1].name, result.players[1].score);
 			self.players.forEach(function (player) {
 			    console.log(player.name + '\tgames:\t' + player.games + '\tvictories:\t' + Math.round((player.victories / player.games) * 100) + '%\tgammons:\t' + Math.round((player.gammons / player.games) * 100) + '%\tbackgammons:\t' + Math.round((player.backgammons / player.games) * 100) + '%\tscored:\t' + player.score + '\tavarage:\t' + (player.score / player.games));
 			})

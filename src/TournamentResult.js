@@ -28,7 +28,7 @@ function TournamentResult(tournament) {
 				name: name,
 				score: average(playerResults, 'score'),
 				victories: average(playerResults, 'victories'),
-				eyes: average(playerResults, 'eyes'),//Hmmm et gennemsnit på 4.3 er ikke så godt på d6 enten er der noget galt med eyes eller dice =)
+				eyes: average(playerResults, 'eyes2'),
 				time: average(playerResults, 'time'),
 				pips: average(playerResults, 'pips'),
 				moves: average(playerResults, 'moves'),

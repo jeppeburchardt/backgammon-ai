@@ -64,7 +64,7 @@ function GameResult(game) {
 		self.result.players[playerId].moves ++;
 		if (moves.length < dice.length) {
 		    self.result.players[playerId].blockedMoves += (dice.length - moves.length);
-		    self.result.players[1 - playerId].blockedOpponentMoves += (dice.length - moves.length);
+			self.result.players[1-playerId].blockedOpponentMoves += (dice.length - moves.length);
 		}
 	});
 

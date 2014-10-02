@@ -18,10 +18,10 @@ function TournamentTable (tournament) {
 
 	self.tournament.on('result', function (result) {
 		var table = new Table({
-			head: ['Name', 'Score', 'Eyes', 'Time', 'Pips', 'Moves', 'Blocked Opponent', 'Blocked']
+		    head: ['Name', 'Score','Victories', 'Eyes', 'Time', 'Pips', 'Moves', 'Blocked Opponent', 'Blocked']
 		});
 		table.push.apply(table, result.map(function (r) {
-			return [r.name, r.score, r.eyes, r.time, r.pips, r.moves, r.blockedOpponentMoves, r.blockedMoves];
+		    return [r.name, r.score, r.victories, r.eyes, r.time, r.pips, r.moves, r.blockedOpponentMoves, r.blockedMoves];
 		}));
 		process.stdout.write('\u001B[0E'); //move to start
 		process.stdout.write('\u001B[0J'); //clear line
