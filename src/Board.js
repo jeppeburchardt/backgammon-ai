@@ -1,5 +1,8 @@
 var Player = require('./Player.js');
 
+/**
+@class
+*/
 function Board () {
 	
 	var self = this;
@@ -16,6 +19,15 @@ function Board () {
 		self.players[1].bearedOff = 0;
 		self.players[0].checkers = [2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 5, 0, 0, 0, 0, 3, 0, 5, 0, 0, 0, 0, 0];
 		self.players[1].checkers = [2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 5, 0, 0, 0, 0, 3, 0, 5, 0, 0, 0, 0, 0];
+	}
+
+	this.initialEndGameCheckers = function () {
+		self.players[0].hits = 0;
+		self.players[1].hits = 0;
+		self.players[0].bearedOff = 0;
+		self.players[1].bearedOff = 0;
+		self.players[0].checkers = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 3, 3, 2, 2, 2];
+		self.players[1].checkers = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 3, 3, 2, 2, 2];
 	}
 
 	this.copy = function () {
