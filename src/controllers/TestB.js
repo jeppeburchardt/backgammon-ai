@@ -44,86 +44,50 @@ function TestB(id) {
         return true;
     }
     function applyScoreToPermutation(p) {
-
         var opponent = 1 - self.id;
         var lowestPositionOfOpponent = self.lowestPositionOfOpponent(p.board);
         var lowestPosition = self.lowestPositionOfSelf(p.board);
+        var checkersOnBoard = (15 - p.board.players[self.id].bearedOff);
+        var pip = getPip(p.board.players[self.id].checkers);
+        var pipOfOpponent = getPip(p.board.players[opponent].checkers);
 
         var endgame = lowestPositionOfOpponent < lowestPosition;
-        
 
         var score = 0;
 
 
-        
-        
-        
-        if (equals(p.board.players[opponent].checkers,[2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 5, 0, 0, 0, 0, 3, 0, 5, 0, 0, 0, 0, 0]) === true) {
-           
-                //2-1
-            if (equals(p.board.players[self.id].checkers, [1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 4, 0, 1, 0, 0, 3, 0, 5, 0, 0, 0, 0, 0]) === true) {
-                    console.log("2-1");
-                    p.score = 100;
-                    return;
-                }
-                //3-1
-            if (equals(p.board.players[self.id].checkers, [2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 5, 0, 0, 0, 0, 2, 0, 4, 2, 0, 0, 0, 0]) === true) {
-                console.log("3-1");
-                    p.score = 100;
-                    return;
-                }
-                //3-2
-            if (equals(p.board.players[self.id].checkers, [2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 0, 1, 1, 0, 3, 0, 5, 0, 0, 0, 0, 0]) === true) {
-                console.log("3-2");
-                    p.score = 100;
-                    return;
-                }
-            if (equals(p.board.players[self.id].checkers, [1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 4, 0, 0, 0, 1, 3, 0, 5, 0, 0, 0, 0, 0]) === true) {
-                console.log("4-1");
-                    p.score = 100;
-                    return;
-                }
-            if (equals(p.board.players[self.id].checkers, [2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 5, 0, 0, 0, 0, 2, 0, 4, 0, 2, 0, 0, 0]) === true) {
-                console.log("4-2");
-                    p.score = 100;
-                    return;
-            }
-            if (equals(p.board.players[self.id].checkers, [2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 0, 0, 1, 1, 3, 0, 5, 0, 0, 0, 0, 0]) === true) {
-                console.log("4-3");
-                p.score = 100;
-                return;
-            }
-            if (equals(p.board.players[self.id].checkers, [2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 5, 0, 0, 0, 0, 3, 0, 5, 0, 0, 0, 0, 0]) === true) {
-                console.log("5-1");
-                p.score = 100;
-                return;
-            }
-                
-         }
-            
-        score += p.board.players[self.id].bearedOff * 12;
         if (endgame) {
-            score += 4;
+            if (pip > pipOfOpponent + 10) {
+                score += 40;
+            }
+            else {
+                score += 4;
+            }
 
-            //everybodys home
-            score += (24 - lowestPosition) > 6 ? 20 : 0;
+            var tilesOccupied = (23 - lowestPosition);
+            var DistributionGoal = tilesOccupied / checkersOnBoard;
 
-            var tilesOccupied = (24 - lowestPosition) > 6 ? (24 - lowestPosition) : 6;
-
-            var DistributionGoal = tilesOccupied / (15 - p.board.players[self.id].bearedOff);
-
+            //playing to get a 3-5-7 at home and even distribution outside 
             p.board.players[self.id].checkers.forEach(function (numCheckers, tile) {
-                score -= Math.abs(DistributionGoal + numCheckers);
+                if (tile >= 18) {
+                    score -= Math.abs(7.4 - 2.4 * (tile - 18) - numCheckers);
+                } else {
+                    score -= Math.abs(DistributionGoal - numCheckers);
+                }
+                //Pip score
+                score -= 0.5 * pip;
+
 
             });
         }
         else {
 
             score += p.board.players[opponent].hits * 3.5;
-
+            var exposed = 0;
             p.board.players[self.id].checkers.forEach(function (numCheckers, tile) {
                 if (numCheckers == 1) {
                     score -= (0.2 * tile);
+                    exposed += 1;
 
                     //Home is exposed so its bad to hit
                     if (tile > 16 && p.board.players[opponent].hits > 0) {
@@ -140,6 +104,15 @@ function TestB(id) {
                 }
 
             });
+
+            //p.board.players[opponent].checkers.forEach(function (numCheckers, tile) {
+                
+            //    //opponent home is blocked so its extra bad to be exposed
+            //    if (numCheckers >= 2 && tile > 17 ) {
+            //        score -= 1* exposed;
+            //    }
+
+            //});
 
             if (p.board.players[self.id].checkers[16] > 2) {
                 score += 1;
@@ -193,7 +166,17 @@ function TestB(id) {
 
         return lowestPosition;
     }
+    function getPip(checkers) {
+        var pip = 0;
+        checkers.forEach(function (numCheckers, tile) {
+            //Pip score
+            pip += (numCheckers * (24 - tile));
 
+
+        });
+
+        return pip;
+    }
 }
 
 module.exports = TestB;

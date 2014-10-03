@@ -20,42 +20,74 @@ function TestA(id) {
 
         return deferred.promise;
     }
+    function equals(array1, array2) {
+        // if the other array is a falsy value, return
+        if (!array1)
+            return false;
 
+        // compare lengths - can save a lot of time 
+        if (array1.length != array2.length)
+            return false;
+
+        for (var i = 0, l = array1.length; i < l; i++) {
+            // Check if we have nested arrays
+            if (array1[i] instanceof Array && array2[i] instanceof Array) {
+                // recurse into the nested arrays
+                if (!this[i].equals(array2[i]))
+                    return false;
+            }
+            else if (array1[i] != array2[i]) {
+                // Warning - two different object instances will never be equal: {x:20} != {x:20}
+                return false;
+            }
+        }
+        return true;
+    }
     function applyScoreToPermutation(p) {
-
         var opponent = 1 - self.id;
         var lowestPositionOfOpponent = self.lowestPositionOfOpponent(p.board);
         var lowestPosition = self.lowestPositionOfSelf(p.board);
+        var checkersOnBoard = (15 - p.board.players[self.id].bearedOff);
+        var pip = getPip(p.board.players[self.id].checkers);
+        var pipOfOpponent = getPip(p.board.players[opponent].checkers);
 
         var endgame = lowestPositionOfOpponent < lowestPosition;
 
         var score = 0;
 
 
-        score += p.board.players[self.id].bearedOff * 12;
-
         if (endgame) {
-            score += 4;
+            if (pip > pipOfOpponent + 10) {
+                score += 40;
+            }
+            else {
+                score += 4;
+            }
 
-            //everybodys home
-            score += (24 - lowestPosition) > 6 ? 20 : 0;
+            var tilesOccupied = (23 - lowestPosition);
+            var DistributionGoal = tilesOccupied / checkersOnBoard;
 
-            var tilesOccupied = (24 - lowestPosition) > 6 ? (24 - lowestPosition) : 6;
-
-            var DistributionGoal = tilesOccupied / (15 - p.board.players[self.id].bearedOff);
-
+            //playing to get a 3-5-7 at home and even distribution outside 
             p.board.players[self.id].checkers.forEach(function (numCheckers, tile) {
-                score -= Math.abs(DistributionGoal + numCheckers);
+                if (tile >= 18) {
+                    score -= Math.abs(7.4 - 2.4 * (tile - 18) - numCheckers);
+                } else {
+                    score -= Math.abs(DistributionGoal - numCheckers);
+                }
+                //Pip score
+                score -= 0.5 * pip;
+
 
             });
         }
         else {
 
             score += p.board.players[opponent].hits * 3.5;
-
+            var exposed = 0;
             p.board.players[self.id].checkers.forEach(function (numCheckers, tile) {
                 if (numCheckers == 1) {
                     score -= (0.2 * tile);
+                    exposed += 1;
 
                     //Home is exposed so its bad to hit
                     if (tile > 16 && p.board.players[opponent].hits > 0) {
@@ -72,6 +104,15 @@ function TestA(id) {
                 }
 
             });
+
+            //p.board.players[opponent].checkers.forEach(function (numCheckers, tile) {
+
+            //    //opponent home is blocked so its extra bad to be exposed
+            //    if (numCheckers >= 2 && tile > 17 ) {
+            //        score -= 1* exposed;
+            //    }
+
+            //});
 
             if (p.board.players[self.id].checkers[16] > 2) {
                 score += 1;
@@ -125,7 +166,17 @@ function TestA(id) {
 
         return lowestPosition;
     }
+    function getPip(checkers) {
+        var pip = 0;
+        checkers.forEach(function (numCheckers, tile) {
+            //Pip score
+            pip += (numCheckers * (24 - tile));
 
+
+        });
+
+        return pip;
+    }
 }
 
 module.exports = TestA;
