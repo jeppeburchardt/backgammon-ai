@@ -69,9 +69,23 @@ function Trainer () {
 
 		//console.log('Starting new match between', a.name, 'and', b.name);
 
-		var game = new Game();
-		game.setController(new a.controller(), a.name);
-		game.setController(new b.controller(), b.name);
+        //endgame
+		//var game = new Game(0, true, 1, [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 7, 0, 0, 0, 3, 0, 5, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 7, 0, 0, 0, 3, 0, 5, 0, 0, 0, 0, 0]);
+
+        //Normal game
+		var game = new Game(0, true);
+
+		if (Math.round(self.gamesPlayed / 2) != self.gamesPlayed / 2) {
+		    game.setController(new a.controller(), a.name);
+		    game.setController(new b.controller(), b.name);
+		}
+		else
+		{
+		    game.setController(new b.controller(), b.name);
+		    game.setController(new a.controller(), a.name);
+		    
+		}
+		
 		var gamePromise = game.start();
 		gamePromise.then(function (result) {
 			//console.log(game.board.players[0].name + ' vs ' + game.board.players[1].name + ' ended ' + result[0] + '-' + result[1]);

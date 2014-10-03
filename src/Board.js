@@ -12,14 +12,14 @@ function Board () {
 		new Player()
 	];
 
-	this.initialCheckers = function () {
+	this.initialCheckers = function (selfCheckers, opponentCheckers) {
 	    self.turn = 0;
 		self.players[0].hits = 0;
 		self.players[1].hits = 0;
 		self.players[0].bearedOff = 0;
 		self.players[1].bearedOff = 0;
-		self.players[0].checkers = [2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 5, 0, 0, 0, 0, 3, 0, 5, 0, 0, 0, 0, 0];
-		self.players[1].checkers = [2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 5, 0, 0, 0, 0, 3, 0, 5, 0, 0, 0, 0, 0];
+		self.players[0].checkers = selfCheckers || [2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 5, 0, 0, 0, 0, 3, 0, 5, 0, 0, 0, 0, 0];
+		self.players[1].checkers = opponentCheckers || [2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 5, 0, 0, 0, 0, 3, 0, 5, 0, 0, 0, 0, 0];
 	}
 
 	this.initialEndGameCheckers = function () {

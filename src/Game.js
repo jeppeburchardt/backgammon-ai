@@ -11,15 +11,17 @@ var Q = require('q');
  * 
  * @class
  */
-function Game (turnDelay) {
+function Game(turnDelay, forcedStartPlayer, startTurn, selfCheckers, opponentCheckers) {
 	
 	var self = this;
 
 	self.result = new GameResult(self);
 
 	self.turnDelay = turnDelay || 0;
+	self.forcedStartPlayer = forcedStartPlayer;
+    
 	
-	self.turn = 0;
+	self.turn = startTurn || 0;
 	self.lastDiceRoll = [];
 
 	var deferred = Q.defer();
@@ -31,7 +33,7 @@ function Game (turnDelay) {
 	self.isRunning = true;
 	self.controllers = [];
 
-	self.board.initialCheckers();
+	self.board.initialCheckers(selfCheckers, opponentCheckers);
 
 
 	this.setController = function (controller, name) {
@@ -46,8 +48,13 @@ function Game (turnDelay) {
 	 * Starts the game
 	 */
 	this.start = function () {
-		self.emit('start');
-		executeFirstRoll();
+	    self.emit('start');
+
+	    if (self.turn == 0)
+	    { executeFirstRoll(); }
+	    else
+	    { executeNextTurn();}
+		
 		return deferred.promise;
 	}
 
@@ -83,12 +90,21 @@ function Game (turnDelay) {
 		while (roll[0] === roll[1]) {
 			roll = self.dice.roll();
 
-			if (roll[0] > roll[1]) {
-				executeNextTurn(self.dice.rollToMoves(roll));
+			if (self.forcedStartPlayer == true)
+			{
+			    if (roll[0] > roll[1] || roll[0] < roll[1]) {
+			        executeNextTurn(self.dice.rollToMoves(roll));
+			    }
+			}
+			else { 
+			    if (roll[0] > roll[1]) {
+				    executeNextTurn(self.dice.rollToMoves(roll));
 
-			} else if (roll[0] < roll[1]) {
-				self.turn ++; //TODO: reverse order of controllers, instead of increasing turn
-				executeNextTurn(self.dice.rollToMoves(roll));
+			    } else if (roll[0] < roll[1]) {
+			    
+				    self.turn ++; //TODO: reverse order of controllers, instead of increasing turn
+				    executeNextTurn(self.dice.rollToMoves(roll));
+			    }
 			}
 		}
 	}
