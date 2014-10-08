@@ -39,6 +39,7 @@ function Game (turnDelay) {
 		controller.id = id;
 		self.controllers.push(controller);
 		self.board.players[id].name = name;
+		self.emit('controller', controller);
 	}
 
 
