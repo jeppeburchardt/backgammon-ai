@@ -52,6 +52,10 @@ function Game (turnDelay) {
 		return deferred.promise;
 	}
 
+	this.stop = function () {
+		resolveGame();
+	};
+
 	function getDiceRoll () {
 		var roll = self.dice.roll();
 		return self.dice.rollToMoves(roll);
@@ -100,6 +104,10 @@ function Game (turnDelay) {
 	 * @private
 	 */
 	function executeNextTurn (forceRoll) {
+
+		if (!self.isRunning) {
+			return; // cancel delayed turns 
+		}
 		
 		var turnStartTime = new Date().getTime();
 		var dice = forceRoll || getDiceRoll();
@@ -167,6 +175,7 @@ function Game (turnDelay) {
 	}
 	
 	function resolveGame (forceLose) {
+		self.isRunning = false;
 		self.emit('end', forceLose);
 		self.emit('result', self.result.result);
 		deferred.resolve(self.result.result);
